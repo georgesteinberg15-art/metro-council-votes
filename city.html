@@ -85,10 +85,14 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 .card h3 a:hover{color:var(--accent)}
 .card p{margin:0;font-size:14px;color:var(--muted)}
 .heat th a{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--muted)}
-.topnav{display:flex;flex-wrap:wrap;gap:6px 18px;font:500 13px var(--body);padding-bottom:4px;border-bottom:1px solid var(--line)}
-.topnav a{text-decoration:none;color:var(--muted);padding-block:6px}
-.topnav a[aria-current]{color:var(--fg);border-bottom:2px solid var(--accent)}
-.topnav a:hover{color:var(--accent)}
+.topnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.topnav .home{font:500 13px var(--body);color:var(--muted);text-decoration:none}
+.topnav .home:hover{color:var(--accent)}
+.toggle{display:inline-flex;border:1.5px solid var(--accent);border-radius:999px;padding:3px;background:var(--panel)}
+.toggle a{font:600 14px var(--body);text-decoration:none;color:var(--accent);padding:8px 18px;border-radius:999px;white-space:nowrap}
+.toggle a[aria-current]{background:var(--accent);color:var(--bg)}
+.toggle a:not([aria-current]):hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+@media (max-width:420px){.toggle a{padding:8px 12px;font-size:13px}}
 .caveats{font-size:14px;color:var(--muted);display:grid;gap:6px;max-width:78ch}
 .caveats p{margin:0}
 @media (max-width:560px){.bar{width:110px}}
@@ -96,7 +100,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 
 <div class="wrap">
 <header>
-  <nav class="topnav" aria-label="Pages"><a href="index.html">Home</a><a href="district.html">District of North Vancouver</a><a href="city.html" aria-current="page">City of North Vancouver</a></nav>
+  <nav class="topnav" aria-label="Switch council"><a class="home" href="index.html">← Both councils</a><div class="toggle" role="group" aria-label="Council"><a href="district.html">District (DNV)</a><a href="city.html" aria-current="page">City (CNV)</a></div></nav>
 
   <div class="eyebrow" style="margin-top:22px">City of North Vancouver · Council term 2022–2026</div>
   <h1>How each Councillor voted</h1>
