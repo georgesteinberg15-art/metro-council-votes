@@ -100,7 +100,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 
 <div class="wrap">
 <header>
-  <nav class="topnav" aria-label="Switch council"><a class="home" href="index.html">← All councils</a><div class="toggle" role="group" aria-label="Council"><a href="district.html" aria-current="page">District of N. Van</a><a href="city.html">City of N. Van</a><a href="west.html">West Van</a><a href="surrey.html">Surrey</a><a href="burnaby.html">Burnaby</a></div></nav>
+  <nav class="topnav" aria-label="Switch council"><a class="home" href="index.html">← All councils</a><div class="toggle" role="group" aria-label="Council"><a href="district.html" aria-current="page">District of N. Van</a><a href="city.html">City of N. Van</a><a href="west.html">West Van</a><a href="surrey.html">Surrey</a><a href="burnaby.html">Burnaby</a><a href="vancouver.html">Vancouver</a></div></nav>
 
   <div class="eyebrow" style="margin-top:22px">District of North Vancouver · Council term 2022–2026</div>
   <h1>How each Councillor voted</h1>
@@ -231,6 +231,7 @@ MEMBERS.forEach((m,a)=>{
   MEMBERS.forEach((_,b)=>{
     if(a===b){h+='<td class="self">—</td>';return;}
     const p=split.filter(i=>'FA'.includes(i.v[a])&&'FA'.includes(i.v[b]));
+    if(p.length<5){h+=`<td class="self" title="${esc(m)} and ${MEMBERS[b]} served together on too few split votes to compare">—</td>`;return;}
     const s=pct(p.filter(i=>i.v[a]===i.v[b]).length,p.length);
     const t=Math.max(0,(s-25)/60);
     h+=`<td style="background:${mix(t)};color:${ink(t)}" title="${esc(m)} & ${MEMBERS[b]}: agreed on ${s}% of ${p.length} split votes">${s}%</td>`;
