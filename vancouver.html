@@ -140,7 +140,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 <section>
   <div class="eyebrow">Categories</div>
   <h2>How each member votes, by category</h2>
-  <p class="note">Categories are assigned from keywords in each agenda item's title, since Vancouver's records don't include topics or motion text. Each cell shows "no" votes out of votes cast in that category. Darker cells mean a higher share of "no" votes. A vote can belong to more than one category: a rezoning for a six-storey rental building counts under both Housing &amp; density and Development. Click a category name to see its votes in the log below.</p>
+  <p class="note">Categories are assigned from keywords in each agenda item's title, since Vancouver's records don't include topics or motion text. Each cell shows "no" votes out of votes cast in that category. Darker cells mean a higher share of "no" votes. <b>A "no" is a vote against one specific motion, which is often an amendment, a referral or a motion to reject something, so these counts don't show whether a member supports or opposes the topic itself.</b> Open the votes to see what each motion said. A vote can belong to more than one category: a rezoning for a six-storey rental building counts under both Housing &amp; density and Development. Click a category name to see its votes in the log below.</p>
   <div class="scroll"><table class="heat" id="topics"></table></div>
   <div class="cards" id="catNotes"></div>
 </section>
@@ -169,6 +169,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
     <p><b>“Against” means against that motion.</b> Amendments, referrals and motions to reject something are separate votes with the same agenda title, and a “no” on them can mean support for the underlying item. Open the meeting page to see the exact wording.</p>
     <p><b>No motion text.</b> The dataset gives the agenda item and outcome but not the wording of each motion, so several votes on one item (amendments, then the main motion) can share a title.</p>
     <p><b>Categories.</b> Each vote is sorted by keywords in its agenda title. A vote can sit in several categories, and some placements are judgment calls.</p>
+    <p><b>How this page was made.</b> The votes were read from the official records by software and checked against samples of the originals. The summaries and topic categories were written and assigned with AI assistance, and they can contain mistakes. Where a summary and the vote log differ, the vote log and the linked official records are correct.</p>
   </div>
 </section>
 </div>
