@@ -9,5 +9,6 @@ How each council member voted in several Metro Vancouver municipalities during t
 - `surrey.html`: City of Surrey, rebuilt from its [Council meeting minutes](https://surrey.ca.granicus.com/ViewPublisher.php?view_id=1)
 - `burnaby.html`: City of Burnaby, rebuilt from its [Council meeting minutes](https://pub-burnaby.escribemeetings.com/)
 - `vancouver.html`: City of Vancouver, from its [Council voting records](https://opendata.vancouver.ca/explore/dataset/council-voting-records/) open dataset
+- `newwest.html`: City of New Westminster, rebuilt from its [Council meeting minutes](https://pub-newwestcity.escribemeetings.com/)
 
 Independent summary, not affiliated with any municipality. Every vote links to the official minutes. Names of private residents and individual applicants are removed from motion text.
