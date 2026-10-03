@@ -85,6 +85,8 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 .card h3 a:hover{color:var(--accent)}
 .card p{margin:0;font-size:14px;color:var(--muted)}
 .heat th a{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--muted)}
+.mv{font-size:13px;color:var(--muted)}
+.corr{font-size:13px;border-left:3px solid var(--warn);padding:2px 0 2px 10px;max-width:80ch}
 .topnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .topnav .home{font:500 13px var(--body);color:var(--muted);text-decoration:none}
 .topnav .home:hover{color:var(--accent)}
@@ -150,6 +152,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
   <div class="controls">
     <label for="q">Search titles and motion text<input type="search" id="q" placeholder="e.g. Curb Access, Eastside Connector, Money Services"></label>
     <label for="who">Voted against<select id="who"><option value="">Anyone</option></select></label>
+    <label for="mover" id="moverLabel" hidden>Moved by<select id="mover"><option value="">Anyone</option></select></label>
     <label for="cat">Category<select id="cat"><option value="">All categories</option></select></label>
     <label for="yr">Year<select id="yr"><option value="">All years</option></select></label>
     <label class="chk" for="splitOnly"><input type="checkbox" id="splitOnly" checked> Split votes only</label>
@@ -182,7 +185,9 @@ const ITEMS=[["2022-11-07", "Chris Plagnol, Corporate Officer, Metro Vancouver, 
 </script>
 <script>
 const SHORT=MEMBERS.map(m=>m.split(' ').slice(-1)[0]);
-const items=ITEMS.map(r=>({date:r[0],title:r[1],res:r[2],mt:r[3],cats:r[4],v:r[5].replace(/-/g,'N').split(''),desc:r[6],min:r[7],vid:r[8],nc:r[9]}));
+const items=ITEMS.map(r=>({date:r[0],title:r[1],res:r[2],mt:r[3],cats:r[4],v:r[5].replace(/-/g,'N').split(''),desc:r[6],min:r[7],vid:r[8],nc:r[9],ex:r[10]||{}}));
+const hasMv=items.some(i=>i.ex.mv);
+const fullName=s=>MEMBERS.find(m=>m.split(' ').slice(-1)[0]===s)||s;
 const CATS=['Housing & density','Development','Taxes & spending','Transportation','Environment & climate','Neighbourhood character','Parks & recreation','Public services','Business & economy','Governance & elections'];
 const NOTES={
  "Housing & density": "Bell (13 “no” votes), Shahriari (11) and Valente (9) dissent most. Bell often opposed rezonings alone. Shahriari opposed the rental projects at 144 West 21st Street and 1540 St. Georges Avenue. Valente's “no” votes are the 2025 provincially required OCP and zoning bylaws. Mayor Buchanan never voted against a housing item.",
@@ -207,7 +212,7 @@ document.getElementById('stats').innerHTML=[
 ].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join('');
 
 // member table
-let mt='<tr><th>Member</th><th>Pattern</th><th class="num">For</th><th class="num">Against</th><th class="num">Absent</th><th class="num">Against rate</th><th class="num">On winning side</th><th class="num">Lone no</th></tr>';
+let mt='<tr><th>Member</th><th>Pattern</th><th class="num">For</th><th class="num">Against</th><th class="num">Absent</th><th class="num">Against rate</th><th class="num">On winning side</th><th class="num">Lone no</th>'+(hasMv?'<th class="num">Motions moved</th>':'')+'</tr>';
 MEMBERS.forEach((m,k)=>{
   const c={F:0,A:0,X:0,N:0}; items.forEach(i=>c[i.v[k]]++);
   const tot=c.F+c.A+c.X;
@@ -217,7 +222,7 @@ MEMBERS.forEach((m,k)=>{
     if((x==='F')===(f>a))win++; if(x==='A'&&a===1)lone++;});
   mt+=`<tr><td><b>${esc(m)}</b>${k===0?' <span class="date">Mayor</span>':''}</td>
   <td><div class="bar" title="For ${c.F}, Against ${c.A}, Absent ${c.X}"><i style="width:${100*c.F/tot}%;background:var(--for)"></i><i style="width:${100*c.A/tot}%;background:var(--against)"></i><i style="width:${100*c.X/tot}%;background:var(--absent)"></i></div></td>
-  <td class="num">${c.F}</td><td class="num">${c.A}</td><td class="num">${c.X}</td><td class="num">${(100*c.A/(c.F+c.A)).toFixed(1)}%</td><td class="num">${pct(win,part)}% <span class="date">(${win}/${part})</span></td><td class="num">${lone}</td></tr>`;
+  <td class="num">${c.F}</td><td class="num">${c.A}</td><td class="num">${c.X}</td><td class="num">${(100*c.A/(c.F+c.A)).toFixed(1)}%</td><td class="num">${pct(win,part)}% <span class="date">(${win}/${part})</span></td><td class="num">${lone}</td>${hasMv?`<td class="num">${items.filter(i=>i.ex.mv===SHORT[k]).length}</td>`:''}</tr>`;
 });
 document.getElementById('memberTable').innerHTML=mt;
 
@@ -260,27 +265,30 @@ document.getElementById('catNotes').innerHTML=CATS.map(c=>`<div class="card"><h3
 // log
 const $=id=>document.getElementById(id);
 MEMBERS.forEach((m,k)=>$('who').insertAdjacentHTML('beforeend',`<option value="${k}">${esc(m)}</option>`));
+if(hasMv){ $('moverLabel').hidden=false; MEMBERS.forEach((m,k)=>$('mover').insertAdjacentHTML('beforeend',`<option value="${SHORT[k]}">${esc(m)}</option>`)); }
 Object.keys(Object.fromEntries(items.flatMap(i=>i.nc).map(c=>[c,1]))).sort().forEach(c=>$('cat').insertAdjacentHTML('beforeend',`<option>${esc(c)}</option>`));
 [...new Set(items.map(i=>i.date.slice(0,4)))].sort().reverse().forEach(y=>$('yr').insertAdjacentHTML('beforeend',`<option>${y}</option>`));
 const LBL={F:'For',A:'Against',X:'Absent',N:'n/a'};
 let shown=40, rows=[];
 function filter(){
-  const q=$('q').value.trim().toLowerCase(), w=$('who').value, c=$('cat').value, y=$('yr').value, so=$('splitOnly').checked;
-  rows=items.filter(i=>(!so||isSplit(i))&&(w===''||i.v[+w]==='A')&&(!c||i.nc.includes(c))&&(!y||i.date.startsWith(y))&&(!q||(i.title+' '+i.desc).toLowerCase().includes(q)));
+  const mvr=$('mover').value; const q=$('q').value.trim().toLowerCase(), w=$('who').value, c=$('cat').value, y=$('yr').value, so=$('splitOnly').checked;
+  rows=items.filter(i=>(!so||isSplit(i))&&(w===''||i.v[+w]==='A')&&(!mvr||i.ex.mv===mvr)&&(!c||i.nc.includes(c))&&(!y||i.date.startsWith(y))&&(!q||(i.title+' '+i.desc).toLowerCase().includes(q)));
   render();
 }
 function render(){
   $('count').textContent=`${rows.length} vote${rows.length===1?'':'s'} match`;
   $('log').innerHTML=rows.slice(0,shown).map(i=>`<div class="row">
     <div class="rh"><span class="date">${i.date}</span><span class="pill ${i.res}">${esc(i.res==='None'?'No result':i.res)}</span><span class="ttl">${esc(i.title)}</span></div>
+    ${i.ex.corr?`<div class="corr">${esc(i.ex.corr)}</div>`:''}
     <div class="votes">${i.v.map((x,k)=>`<span class="v ${x}" title="${esc(MEMBERS[k])}: ${LBL[x]}">${SHORT[k]} ${x==='F'?'✓':x==='A'?'✗':x==='X'?'absent':'–'}</span>`).join('')}</div>
+    ${i.ex.mv?`<div class="mv">Moved by ${esc(fullName(i.ex.mv))}${i.ex.sc?', seconded by '+esc(fullName(i.ex.sc)):''}</div>`:''}
     <details><summary>Motion text · ${esc(i.nc.join(', '))} · ${esc(i.mt)}</summary><p>${esc(i.desc||'(no motion text recorded)')}</p>
     <p>${i.min?`<a href="${esc(i.min)}" target="_blank" rel="noopener">Minutes</a>`:''}${i.min&&i.vid?' · ':''}${i.vid?`<a href="${esc(i.vid)}" target="_blank" rel="noopener">Video of discussion</a>`:''}</p></details>
   </div>`).join('')||'<div class="row">No votes match these filters.</div>';
   $('more').hidden=rows.length<=shown;
 }
 document.addEventListener('click',e=>{const a=e.target.closest('.catlink'); if(!a)return; $('cat').value=a.dataset.cat; shown=40; filter();});
-['q','who','cat','yr','splitOnly'].forEach(id=>$(id).addEventListener('input',()=>{shown=40;filter();}));
+['q','who','mover','cat','yr','splitOnly'].forEach(id=>$(id).addEventListener('input',()=>{shown=40;filter();}));
 $('more').addEventListener('click',()=>{shown+=60;render();});
 filter();
 </script>
