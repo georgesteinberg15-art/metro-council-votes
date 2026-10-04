@@ -86,6 +86,14 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 .card p{margin:0;font-size:14px;color:var(--muted)}
 .heat th a{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--muted)}
 .mv{font-size:13px;color:var(--muted)}
+.mtxt{font-size:14px;max-width:80ch;overflow-wrap:anywhere}
+.issue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 16px}
+.issue li{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:4px;list-style:none}
+.issue li:last-child{border-bottom:0}
+.issue ul{margin:0;padding:0}
+.issue .when{font:12px var(--mono);color:var(--muted)}
+.issue .meta{font-size:13px;color:var(--muted)}
+.qlink{font-weight:600}
 .corr{font-size:13px;border-left:3px solid var(--warn);padding:2px 0 2px 10px;max-width:80ch}
 .topnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .topnav .home{font:500 13px var(--body);color:var(--muted);text-decoration:none}
@@ -123,6 +131,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
     <li><b>Attendance varies widely.</b> Nagra missed 24 meetings and Annis 14; Rob Stutt missed almost none. Absent members aren't counted in the “against” rates.</li>
   </ul>
 </section>
+
 
 <section>
   <div class="eyebrow">Members</div>
@@ -273,7 +282,7 @@ const LBL={F:'For',A:'Against',X:'Absent',N:'n/a'};
 let shown=40, rows=[];
 function filter(){
   const mvr=$('mover').value; const q=$('q').value.trim().toLowerCase(), w=$('who').value, c=$('cat').value, y=$('yr').value, so=$('splitOnly').checked;
-  rows=items.filter(i=>(!so||isSplit(i))&&(w===''||i.v[+w]==='A')&&(!mvr||i.ex.mv===mvr)&&(!c||i.nc.includes(c))&&(!y||i.date.startsWith(y))&&(!q||(i.title+' '+i.desc).toLowerCase().includes(q)));
+  rows=items.filter(i=>(!so||isSplit(i))&&(w===''||i.v[+w]==='A')&&(!mvr||i.ex.mv===mvr)&&(!c||i.nc.includes(c))&&(!y||i.date.startsWith(y))&&(!q||(i.title+' '+i.desc+' '+(i.ex.kw||'')).toLowerCase().includes(q)));
   render();
 }
 function render(){
@@ -282,13 +291,15 @@ function render(){
     <div class="rh"><span class="date">${i.date}</span><span class="pill ${i.res}">${esc(i.res==='None'?'No result':i.res)}</span><span class="ttl">${esc(i.title)}</span></div>
     ${i.ex.corr?`<div class="corr">${esc(i.ex.corr)}</div>`:''}
     <div class="votes">${i.v.map((x,k)=>`<span class="v ${x}" title="${esc(MEMBERS[k])}: ${LBL[x]}">${SHORT[k]} ${x==='F'?'✓':x==='A'?'✗':x==='X'?'absent':'–'}</span>`).join('')}</div>
+    ${i.desc&&!/^(Vancouver's voting records|Main motion, as amended \(see)/.test(i.desc)?`<div class="mtxt">${esc(i.desc.length>200?i.desc.slice(0,200).replace(/\s+\S*$/,'')+'…':i.desc)}</div>`:''}
     ${i.ex.mv?`<div class="mv">Moved by ${esc(fullName(i.ex.mv))}${i.ex.sc?', seconded by '+esc(fullName(i.ex.sc)):''}</div>`:''}
-    <details><summary>Motion text · ${esc(i.nc.join(', '))} · ${esc(i.mt)}</summary><p>${esc(i.desc||'(no motion text recorded)')}</p>
+    <details><summary>Full motion text · ${esc(i.nc.join(', '))} · ${esc(i.mt)}</summary><p>${esc(i.desc||'(no motion text recorded)')}</p>
     <p>${i.min?`<a href="${esc(i.min)}" target="_blank" rel="noopener">Minutes</a>`:''}${i.min&&i.vid?' · ':''}${i.vid?`<a href="${esc(i.vid)}" target="_blank" rel="noopener">Video of discussion</a>`:''}</p></details>
   </div>`).join('')||'<div class="row">No votes match these filters.</div>';
   $('more').hidden=rows.length<=shown;
 }
-document.addEventListener('click',e=>{const a=e.target.closest('.catlink'); if(!a)return; $('cat').value=a.dataset.cat; shown=40; filter();});
+document.addEventListener('click',e=>{const ql=e.target.closest('.qlink'); if(ql){ $('q').value=ql.dataset.q; $('splitOnly').checked=false; $('who').value=''; $('cat').value=''; $('yr').value=''; if($('mover')) $('mover').value=''; shown=40; filter(); return; }
+  const a=e.target.closest('.catlink'); if(!a)return; $('cat').value=a.dataset.cat; shown=40; filter();});
 ['q','who','mover','cat','yr','splitOnly'].forEach(id=>$(id).addEventListener('input',()=>{shown=40;filter();}));
 $('more').addEventListener('click',()=>{shown+=60;render();});
 filter();
