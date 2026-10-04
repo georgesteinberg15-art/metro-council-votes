@@ -120,6 +120,7 @@ summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
 .tabs button{font:600 15px var(--body);background:transparent;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer}
 .tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
 .tabs button:focus-visible,.namebtn:focus-visible,.issuebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
 .panel{display:grid;gap:18px;min-width:0}
 .controls label{min-width:0;max-width:100%}
 .controls select,.controls input{max-width:100%;min-width:0}
@@ -175,6 +176,7 @@ h4{margin:0}
 .issuebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--bg)}
 .issuebtn[aria-pressed="true"] span{color:var(--bg)}
 .event{background:transparent}
+.disclaimer{margin:12px 0 0;max-width:86ch;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
 .plain{display:grid;gap:10px;max-width:86ch;font-size:14.5px}
 .plain p,.plain li{margin:0}
 .plain ul,.plain ol{margin:0;padding-left:20px;display:grid;gap:6px}
@@ -187,6 +189,7 @@ h4{margin:0}
   <div class="eyebrow" style="margin-top:22px">District of North Vancouver · Council term 2022–2026</div>
   <h1>What Council decided, who moved it and how each member voted</h1>
   <p class="lede"><b>Independent summary, not affiliated with the District of North Vancouver.</b> Every recorded Council vote from November 2022 to July 2026, with the motion text, who moved and seconded it, the result and each member's vote. Votes come from the District's voting register and are checked against the official minutes, which also supply the mover and seconder.</p>
+  <p class="disclaimer"><b>Compiled from public council records.</b> This page may contain transcription or processing errors; the linked official minutes are authoritative. Spotted a mistake? Email <a href="mailto:georgesteinberg15@gmail.com">georgesteinberg15@gmail.com</a>.</p>
   <div class="stats" id="stats"></div>
 </header>
 
