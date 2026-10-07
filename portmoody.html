@@ -318,7 +318,7 @@ function card(v){
     <div class="movers">${mover}</div>
     ${desc?`<p class="desc">${esc(desc)}</p>`:''}
     ${v.note?`<p class="rel">${esc(v.note)}</p>`:''}
-    ${v.corr?`<div class="disc"><b>Source discrepancy.</b> ${esc(v.corr)} This site follows the official minutes.</div>`:''}
+    ${v.corr?`<div class="disc"><b>Source discrepancy.</b> ${esc(v.corr)} ${esc(META.corrSuffix===undefined?'This site follows the official minutes.':META.corrSuffix)}</div>`:''}
     <div class="vgrid">${rows}</div>
     <details><summary>${v.x?'Full motion text, topics and sources':'Topics and sources'}</summary>
       <p class="fulltext">${esc(v.x||META.noText)}</p>
