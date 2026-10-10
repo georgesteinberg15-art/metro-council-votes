@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Corrections and changes made to Council Record, newest first, with the latest meeting included for each council.">
+<title>Corrections log · Council Record</title>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (max 1080px), findings first, then member table, blocs heatmap, topic grid, searchable vote log */
+:root{
+  --bg:#f6f7f5; --panel:#ffffff; --fg:#1b2420; --muted:#5d6a64; --line:#dde2de;
+  --accent:#1f5a4a;          /* cedar green */
+  --for:#2f7d63; --against:#b4462f; --absent:#9aa39f; --na:#d6dbd8;
+  --heat0:#eef2ef; --heat1:#1f5a4a; --warn:#b4462f;
+  --display:"Source Serif 4", Georgia, serif;
+  --body:"Public Sans", system-ui, -apple-system, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121815; --panel:#18201c; --fg:#e4ebe7; --muted:#9aa8a1; --line:#2b3530;
+  --accent:#7cc4a8; --for:#5fb893; --against:#e57a60; --absent:#6d7873; --na:#2f3833;
+  --heat0:#1d2622; --heat1:#7cc4a8; --warn:#e57a60; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --panel:#18201c; --fg:#e4ebe7; --muted:#9aa8a1; --line:#2b3530;
+  --accent:#7cc4a8; --for:#5fb893; --against:#e57a60; --absent:#6d7873; --na:#2f3833;
+  --heat0:#1d2622; --heat1:#7cc4a8; --warn:#e57a60; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:grid;gap:44px}
+h1,h2{font-family:var(--display);font-weight:650;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1}
+h2{font-size:24px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);max-width:68ch;margin:10px 0 0}
+section{display:grid;gap:14px;min-width:0}
+section>p.note{color:var(--muted);margin:0;max-width:72ch;font-size:14px}
+a{color:var(--accent)}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:18px;font-variant-numeric:tabular-nums}
+.stats div{display:grid}
+.stats b{font:600 26px/1.1 var(--display)}
+.stats span{font-size:13px;color:var(--muted)}
+ul.find{margin:0;padding-left:20px;display:grid;gap:8px;max-width:78ch}
+.scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font:500 11px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+.bar{display:flex;height:10px;width:180px;border-radius:2px;overflow:hidden;background:var(--na)}
+.bar i{display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.heat td{text-align:center;font:500 13px var(--mono);min-width:64px}
+.heat td.self{color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.controls label{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+input,select{font:14px var(--body);padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--fg)}
+input[type=search]{min-width:min(260px,100%)}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chk{display:flex!important;grid-auto-flow:column;align-items:center;gap:6px;padding-bottom:8px}
+.count{font:13px var(--mono);color:var(--muted)}
+.log{display:grid;gap:0;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.row{padding:12px 14px;border-bottom:1px solid var(--line);display:grid;gap:6px;min-width:0}
+.row:last-child{border-bottom:0}
+.rh{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.date{font:12px var(--mono);color:var(--muted)}
+.ttl{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.pill{font:500 11px/1 var(--mono);padding:3px 6px;border-radius:3px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.pill.Defeated{color:var(--warn);border-color:var(--warn)}
+.votes{display:flex;flex-wrap:wrap;gap:4px}
+.v{font:500 11px/1 var(--mono);padding:4px 6px;border-radius:3px;color:#fff}
+.v.F{background:var(--for)} .v.A{background:var(--against)} .v.X{background:var(--absent)} .v.N{background:var(--na);color:var(--muted)}
+details{font-size:13px;color:var(--muted)}
+details p{margin:6px 0;white-space:pre-line;overflow-wrap:anywhere;max-width:80ch}
+summary{cursor:pointer;max-width:100%;overflow-wrap:anywhere}
+.more{justify-self:start;font:14px var(--body);padding:8px 14px;border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:4px;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:6px;align-content:start;min-width:0}
+.card h3{margin:0;font:600 16px/1.3 var(--display)}
+.card h3 a{text-decoration:none;color:var(--fg)}
+.card h3 a:hover{color:var(--accent)}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.heat th a{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--muted)}
+.mv{font-size:13px;color:var(--muted)}
+.mtxt{font-size:14px;max-width:80ch;overflow-wrap:anywhere}
+.issue{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 16px}
+.issue li{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:4px;list-style:none}
+.issue li:last-child{border-bottom:0}
+.issue ul{margin:0;padding:0}
+.issue .when{font:12px var(--mono);color:var(--muted)}
+.issue .meta{font-size:13px;color:var(--muted)}
+.qlink{font-weight:600}
+.corr{font-size:13px;border-left:3px solid var(--warn);padding:2px 0 2px 10px;max-width:80ch}
+.topnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.topnav .home{font:500 13px var(--body);color:var(--muted);text-decoration:none}
+.topnav .home:hover{color:var(--accent)}
+.toggle{display:inline-flex;flex-wrap:wrap;gap:2px;border:1.5px solid var(--accent);border-radius:20px;padding:3px;background:var(--panel)}
+.toggle a{font:600 14px var(--body);text-decoration:none;color:var(--accent);padding:7px 14px;border-radius:999px;white-space:nowrap}
+.toggle a[aria-current]{background:var(--accent);color:var(--bg)}
+.toggle a:not([aria-current]):hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+@media (max-width:520px){.toggle a{padding:6px 10px;font-size:12.5px}}
+.caveats{font-size:14px;color:var(--muted);display:grid;gap:6px;max-width:78ch}
+.caveats p{margin:0}
+@media (max-width:560px){.bar{width:110px}}
+
+.wrap{gap:28px}
+.callout{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:14px 18px;max-width:86ch}
+.callout h2{font-size:18px;margin-bottom:6px}
+.callout p{margin:0;font-size:14.5px}
+.questions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:12px}
+.questions a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;text-decoration:none;color:var(--fg);display:grid;gap:4px}
+.questions a:hover{border-color:var(--accent)}
+.questions b{font:600 16px/1.3 var(--display)}
+.questions span{font-size:13px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);scroll-margin-top:12px}
+.tabs button{font:600 15px var(--body);background:transparent;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.tabs button:focus-visible,.namebtn:focus-visible,.issuebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.panel{display:grid;gap:18px;min-width:0}
+.controls label{min-width:0;max-width:100%}
+.controls select,.controls input{max-width:100%;min-width:0}
+h3{font:650 22px/1.2 var(--display);margin:0}
+h4{margin:0}
+.sub{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:8px}
+.note{color:var(--muted);margin:0;max-width:86ch;font-size:14px}
+.muted{color:var(--muted)} .small{font-size:12px}
+.namebtn{font:600 15px var(--body);background:transparent;border:0;color:var(--accent);padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px;align-items:start}
+.twocol>div{display:grid;gap:10px;min-width:0}
+.record{margin:0;display:grid;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.record div{display:flex;justify-content:space-between;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line)}
+.record div:last-child{border-bottom:0}
+.record dt{color:var(--fg)} .record dd{margin:0;font:600 15px var(--mono);font-variant-numeric:tabular-nums}
+.record div:nth-child(-n+2) dt{font-weight:600}
+.grp{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 14px;color:var(--fg);font-size:15px}
+.grp>summary{padding:12px 0;font-weight:600;width:auto;cursor:pointer}
+.grp[open]>summary{border-bottom:1px solid var(--line)}
+.vote{padding:16px 0;border-bottom:1px solid var(--line);display:grid;gap:8px;min-width:0}
+.vote:last-child{border-bottom:0}
+.listbox{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 16px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;font:12px var(--mono);color:var(--muted);align-items:center}
+.type{font:500 11px/1 var(--mono);padding:3px 6px;border-radius:3px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.t-Amendment,.t-Referral,.t-Postponement,.t-Reconsideration{border-color:var(--warn);color:var(--warn)}
+.t-ns{border-color:var(--accent);color:var(--accent)}
+.vote h4{font:600 17px/1.3 var(--body);overflow-wrap:anywhere}
+.seq{margin:0;font-size:13px;color:var(--muted)}
+.res{font:650 16px/1.3 var(--display)}
+.res.Defeated{color:var(--warn)}
+.movers{display:flex;flex-wrap:wrap;gap:4px 22px;font-size:15px}
+.mvline b{font-weight:600}
+.desc{margin:0;max-width:86ch;font-size:14.5px;overflow-wrap:anywhere}
+.rel{margin:0;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;max-width:86ch}
+.disc{font-size:13.5px;border-left:3px solid var(--warn);padding:2px 0 2px 10px;max-width:86ch}
+.vgrid{display:grid;gap:5px}
+.vrow{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:start;font-size:13px}
+.vlab{color:var(--muted);padding-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font:500 12px/1 var(--mono);padding:5px 7px;border-radius:3px;border:1px solid transparent}
+.chip.F{background:var(--for);color:#fff} .chip.A{background:var(--against);color:#fff}
+.chip.X{background:transparent;border-color:var(--absent);color:var(--muted)} .chip.N{background:transparent;border:1px dashed var(--absent);color:var(--muted)}
+.chip.role{outline:2px solid var(--fg);outline-offset:1px}
+.chip em{font-style:normal;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-left:4px}
+.vote details{font-size:13.5px;color:var(--muted)}
+.vote summary{cursor:pointer;max-width:100%}
+.fulltext{white-space:pre-line;overflow-wrap:anywhere;max-width:86ch;color:var(--fg)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+.src{margin:4px 0;max-width:86ch}
+.issues{display:flex;flex-wrap:wrap;gap:6px}
+.issuebtn{font:500 14px var(--body);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--fg);cursor:pointer}
+.issuebtn span{font:12px var(--mono);color:var(--muted);margin-left:4px}
+.issuebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--bg)}
+.issuebtn[aria-pressed="true"] span{color:var(--bg)}
+.event{background:transparent}
+.disclaimer{margin:12px 0 0;max-width:86ch;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.tools{margin:8px 0 0;max-width:86ch;font-size:13.5px;color:var(--muted);line-height:1.7}
+.share{margin:0}
+.cplink{font:500 12.5px var(--body);background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--muted);padding:4px 9px;cursor:pointer}
+.cplink:hover,.cplink:focus-visible{color:var(--accent);border-color:var(--accent)}
+.plain{display:grid;gap:10px;max-width:86ch;font-size:14.5px}
+.plain p,.plain li{margin:0}
+.plain ul,.plain ol{margin:0;padding-left:20px;display:grid;gap:6px}
+@media (max-width:560px){.vrow{grid-template-columns:1fr}.vlab{padding-top:0}}
+
+.disclaimer{margin:12px 0 0;max-width:86ch;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.grpbody{padding-bottom:10px}
+.pgmore{margin:10px 0 14px}
+.record.nomv div:nth-child(-n+2) dt{font-weight:400}
+
+.doc{display:grid;gap:12px;max-width:78ch;font-size:15.5px;line-height:1.6}
+.doc p,.doc li{margin:0}
+.doc ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.doc h2{font:650 22px/1.25 var(--display);margin:18px 0 0}
+.doc dl{margin:0;display:grid;gap:14px}
+.doc dt{font-weight:600}
+.doc dd{margin:2px 0 0}
+.logrow{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:4px}
+.logrow .when{font:500 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+</style>
+<div class="wrap">
+<header>
+  <nav class="topnav" aria-label="Switch council"><a class="home" href="index.html">← All councils</a><div class="toggle" role="group" aria-label="Council"><a href="district.html">District of N. Van</a><a href="city.html">City of N. Van</a><a href="west.html">West Van</a><a href="surrey.html">Surrey</a><a href="burnaby.html">Burnaby</a><a href="vancouver.html">Vancouver</a><a href="newwest.html">New West</a><a href="richmond.html">Richmond</a><a href="portmoody.html">Port Moody</a><a href="portcoquitlam.html">Port Coquitlam</a><a href="coquitlam.html">Coquitlam</a><a href="langleytownship.html">Langley Twp</a><a href="delta.html">Delta</a><a href="mapleridge.html">Maple Ridge</a><a href="whiterock.html">White Rock</a><a href="langleycity.html">Langley City</a><a href="pittmeadows.html">Pitt Meadows</a></div></nav>
+
+  <div class="eyebrow" style="margin-top:22px">Corrections log</div>
+  <h1>Corrections and changes</h1>
+  <p class="lede">What has been corrected or added on this site, newest first. Site last updated October 10, 2026.</p>
+  <p class="disclaimer"><b>Compiled from public council records.</b> The pages may contain transcription or processing errors; the linked official records are authoritative. Spotted a mistake? Email <a href="mailto:georgesteinberg15@gmail.com">georgesteinberg15@gmail.com</a> with the council, date and item. Every report is checked against the official record, and corrections are listed here.</p>
+</header>
+<div class="doc">
+  <div class="logrow"><span class="when">October 10, 2026 · Addition</span><b>All councils</b><p>Added a link for each vote and each councillor’s record, vote numbering under an agenda heading on every page, a search across all councils, spreadsheet downloads, a guide to reading a vote and this log.</p></div><div class="logrow"><span class="when">October 6, 2026 · Addition</span><b>City of Vancouver</b><p>Added motion text, movers and seconders from the official minutes. Where the City’s voting data and the minutes differ, the difference is shown on the vote.</p></div><div class="logrow"><span class="when">October 4, 2026 · Addition</span><b>District of North Vancouver</b><p>Votes on the same agenda item are now numbered in the order recorded in the minutes.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>District of North Vancouver</b><p>Restored the November 14, 2023 referral vote on the Deep Cove Parking Review, which had been left out in error. The District’s voting register and the official minutes describe it differently; the vote is shown with that discrepancy noted.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>District of North Vancouver</b><p>Corrected nine votes where the District’s voting register differed from the official minutes. The site now follows the minutes and shows each difference on the vote under “Source discrepancy”.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>District of North Vancouver</b><p>Corrected a summary about parks votes and two other summary statements that did not accurately describe individual members’ votes.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>All councils</b><p>Removed summaries written by this site that characterized members or groups of members. Pages now show the motion text, the mover and seconder where the minutes name them, the result and each member’s vote, without ratings or labels.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>Surrey, Burnaby, New Westminster, West Vancouver</b><p>Some members who had left the room for an item, for example after declaring a conflict of interest, had been shown as voting in favour. They are now shown as absent for those votes.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>Surrey, New Westminster</b><p>Some votes against that the minutes record in a different format had been missed. They are now shown.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>Burnaby</b><p>Minutes with rotated pages had been misread by the software. Those meetings were read again and their votes restored.</p></div><div class="logrow"><span class="when">October 3, 2026 · Correction</span><b>All councils</b><p>Fixed a display fault that showed all four sections of a page at once instead of one tab at a time.</p></div><div class="logrow"><span class="when">October 3, 2026 · Addition</span><b>All councils</b><p>Added a corrections contact and a notice on every page that the data may contain transcription or processing errors.</p></div>
+  <h2>Latest meeting included, by council</h2>
+  <ul><li><a href="district.html">District of North Vancouver</a>: July 20, 2026 (581 votes)</li><li><a href="city.html">City of North Vancouver</a>: September 21, 2026 (1,008 votes)</li><li><a href="west.html">District of West Vancouver</a>: August 24, 2026 (1,145 votes)</li><li><a href="surrey.html">City of Surrey</a>: June 15, 2026 (8,457 votes)</li><li><a href="burnaby.html">City of Burnaby</a>: August 25, 2026 (2,461 votes)</li><li><a href="vancouver.html">City of Vancouver</a>: August 14, 2026 (2,414 votes)</li><li><a href="newwest.html">City of New Westminster</a>: September 21, 2026 (1,541 votes)</li><li><a href="richmond.html">City of Richmond</a>: July 13, 2026 (1,293 votes)</li><li><a href="portmoody.html">City of Port Moody</a>: July 28, 2026 (1,035 votes)</li><li><a href="portcoquitlam.html">City of Port Coquitlam</a>: September 8, 2026 (699 votes)</li><li><a href="coquitlam.html">City of Coquitlam</a>: September 21, 2026 (908 votes)</li><li><a href="langleytownship.html">Township of Langley</a>: July 27, 2026 (1,826 votes)</li><li><a href="delta.html">City of Delta</a>: June 15, 2026 (1,681 votes)</li><li><a href="mapleridge.html">City of Maple Ridge</a>: September 8, 2026 (947 votes)</li><li><a href="whiterock.html">City of White Rock</a>: September 14, 2026 (1,495 votes)</li><li><a href="langleycity.html">City of Langley</a>: July 13, 2026 (686 votes)</li><li><a href="pittmeadows.html">City of Pitt Meadows</a>: September 29, 2026 (634 votes)</li></ul>
+  <p class="note">This log lists changes to what the pages say. It began on October 10, 2026 and includes the main earlier corrections. <a href="index.html">Back to all councils</a>.</p>
+</div>
+</div>
+
+<script data-goatcounter="https://councilrecord.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>

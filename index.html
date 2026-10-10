@@ -53,6 +53,38 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <h1>What your council decided and how each member voted</h1>
   <p class="lede"><b>Independent summary, not affiliated with any municipality.</b> Council voting records for the District of North Vancouver, the City of North Vancouver, the District of West Vancouver, the City of Surrey, the City of Burnaby, the City of Vancouver, the City of New Westminster, the City of Richmond, the City of Port Moody, the City of Port Coquitlam, the City of Coquitlam, the Township of Langley, the City of Delta, the City of Maple Ridge, the City of White Rock, the City of Langley and the City of Pitt Meadows. See what each council decided, who moved each motion where the record names them, and how each member voted, by councillor, by issue and by vote, linked to the official record.</p>
 </header>
+<style>
+[hidden]{display:none!important}
+.find{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.find h2{font:650 20px/1.25 var(--display);margin:0}
+.find form{display:flex;flex-wrap:wrap;gap:8px}
+.find input[type=search]{flex:1 1 220px;min-width:0;font-size:16px;padding:9px 11px}
+.find select{flex:0 1 220px;min-width:0;max-width:100%}
+.find button{font:600 14px var(--body);padding:9px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);border-radius:4px;cursor:pointer}
+.find .more{background:transparent;color:var(--accent);font-weight:400;justify-self:start}
+.hit{border-top:1px solid var(--line);padding:10px 0 2px;display:grid;gap:3px;min-width:0}
+.hit .m{font-size:12.5px;color:var(--muted)}
+.hit a{font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.hit a:hover{text-decoration:underline}
+.hit .x{font-size:13.5px;color:var(--muted);overflow-wrap:anywhere}
+.tools{margin:0;max-width:78ch;font-size:14px;color:var(--muted);line-height:1.7}
+.dl summary{cursor:pointer;color:var(--accent);font-size:14px}
+.dl ul{margin:8px 0 0;padding-left:20px;font-size:14px;columns:2 240px}
+</style>
+<section class="find" aria-label="Search all councils">
+  <h2>Search every council</h2>
+  <form id="findForm" role="search">
+    <input type="search" id="findQ" placeholder="e.g. pickleball, short-term rental, tree bylaw" aria-label="Search votes in all councils">
+    <select id="findC" aria-label="Council"><option value="">All councils</option></select>
+    <button type="submit">Search</button>
+  </form>
+  <p class="note" id="findNote">Searches the title and the opening words of every recorded motion on this site. For a full-text search with filters by councillor, open a council’s page and use “All votes”.</p>
+  <div id="findOut"></div>
+  <button class="more" id="findMore" type="button" hidden>Show more</button>
+</section>
+<p class="tools">Last updated October 10, 2026. <a href="guide.html">How to read a vote</a> · <a href="corrections.html">Corrections log</a></p>
+<details class="dl"><summary>Download the data (one spreadsheet file per council)</summary>
+<ul><li><a href="data/district-council-votes.csv" download>District of North Vancouver</a></li><li><a href="data/city-council-votes.csv" download>City of North Vancouver</a></li><li><a href="data/west-council-votes.csv" download>District of West Vancouver</a></li><li><a href="data/surrey-council-votes.csv" download>City of Surrey</a></li><li><a href="data/burnaby-council-votes.csv" download>City of Burnaby</a></li><li><a href="data/vancouver-council-votes.csv" download>City of Vancouver</a></li><li><a href="data/newwest-council-votes.csv" download>City of New Westminster</a></li><li><a href="data/richmond-council-votes.csv" download>City of Richmond</a></li><li><a href="data/portmoody-council-votes.csv" download>City of Port Moody</a></li><li><a href="data/portcoquitlam-council-votes.csv" download>City of Port Coquitlam</a></li><li><a href="data/coquitlam-council-votes.csv" download>City of Coquitlam</a></li><li><a href="data/langleytownship-council-votes.csv" download>Township of Langley</a></li><li><a href="data/delta-council-votes.csv" download>City of Delta</a></li><li><a href="data/mapleridge-council-votes.csv" download>City of Maple Ridge</a></li><li><a href="data/whiterock-council-votes.csv" download>City of White Rock</a></li><li><a href="data/langleycity-council-votes.csv" download>City of Langley</a></li><li><a href="data/pittmeadows-council-votes.csv" download>City of Pitt Meadows</a></li></ul></details>
 <div class="grid">
   <a class="card" href="district.html">
     <div class="eyebrow">District of North Vancouver</div>
@@ -179,6 +211,37 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 <p class="note">This site counts page visits with GoatCounter, which uses no cookies and does not identify or track individual visitors.</p>
 <p class="note">The councils record their meetings differently, so what can be shown differs by page. Each page explains its source and limits.</p>
 </div>
+<script>
+(function(){
+  const C=[["district", "district.html", "District of North Vancouver"], ["city", "city.html", "City of North Vancouver"], ["west", "west.html", "District of West Vancouver"], ["surrey", "surrey.html", "City of Surrey"], ["burnaby", "burnaby.html", "City of Burnaby"], ["vancouver", "vancouver.html", "City of Vancouver"], ["newwest", "newwest.html", "City of New Westminster"], ["richmond", "richmond.html", "City of Richmond"], ["portmoody", "portmoody.html", "City of Port Moody"], ["portcoquitlam", "portcoquitlam.html", "City of Port Coquitlam"], ["coquitlam", "coquitlam.html", "City of Coquitlam"], ["langleytownship", "langleytownship.html", "Township of Langley"], ["delta", "delta.html", "City of Delta"], ["mapleridge", "mapleridge.html", "City of Maple Ridge"], ["whiterock", "whiterock.html", "City of White Rock"], ["langleycity", "langleycity.html", "City of Langley"], ["pittmeadows", "pittmeadows.html", "City of Pitt Meadows"]], $=id=>document.getElementById(id), IDX={};
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmtDate=d=>new Date(d+'T12:00:00').toLocaleDateString('en-CA',{year:'numeric',month:'long',day:'numeric'});
+  C.forEach(c=>$('findC').insertAdjacentHTML('beforeend',`<option value="${c[0]}">${esc(c[2])}</option>`));
+  let hits=[], shown=0, run=0;
+  function load(c){ return IDX[c[0]]?Promise.resolve():fetch('search/'+c[0]+'.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{ IDX[c[0]]=j.map(r=>({r,h:(r[2]+' '+r[4]).toLowerCase()})); }); }
+  function draw(){
+    $('findOut').insertAdjacentHTML('beforeend',hits.slice(shown,shown+30).map(({c,r})=>`<div class="hit"><span class="m">${fmtDate(r[1])} · ${esc(c[2])} · ${esc(r[3])}</span><a href="${c[1]}#vote/${encodeURIComponent(r[0])}">${esc(r[2])}</a>${r[4]?`<span class="x">${esc(r[4].length>200?r[4].slice(0,200).replace(/\s+\S*$/,'')+'…':r[4])}</span>`:''}</div>`).join(''));
+    shown=Math.min(shown+30,hits.length); $('findMore').hidden=shown>=hits.length;
+  }
+  async function search(){
+    const words=$('findQ').value.trim().toLowerCase().split(/\s+/).filter(Boolean), only=$('findC').value, me=++run;
+    $('findOut').innerHTML=''; $('findMore').hidden=true; hits=[]; shown=0;
+    if(!words.length){ $('findNote').textContent='Type a word or phrase to search.'; return; }
+    const list=C.filter(c=>!only||c[0]===only); let failed=0;
+    for(let i=0;i<list.length;i++){
+      $('findNote').textContent=`Searching… ${i} of ${list.length} councils read.`;
+      try{ await load(list[i]); }catch(e){ failed++; continue; }
+      if(me!==run) return;
+      IDX[list[i][0]].forEach(o=>{ if(words.every(w=>o.h.includes(w))) hits.push({c:list[i],r:o.r}); });
+    }
+    hits.sort((a,b)=>a.r[1]<b.r[1]?1:a.r[1]>b.r[1]?-1:0);
+    $('findNote').textContent=`${hits.length.toLocaleString('en-CA')} vote${hits.length===1?'':'s'} found${only?'':' across '+(list.length-failed)+' councils'}, newest first. Matches are in the title or the opening words of the motion; the result shown is the vote on that specific motion.`+(failed?` ${failed} council${failed===1?'':'s'} could not be read; please try again.`:'');
+    draw();
+  }
+  $('findForm').addEventListener('submit',e=>{ e.preventDefault(); search(); });
+  $('findMore').addEventListener('click',draw);
+})();
+</script>
 <script data-goatcounter="https://councilrecord.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
